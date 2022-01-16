@@ -22,11 +22,20 @@ import java.util.regex.Pattern;
 import java.util.Objects;
 import java.util.List;
 
+/**
+ * Crossword puzzle GUI
+ */
 public class CrosswordPuzzle {
     private final Scene scene;
+
     private final TextField[][] textFields;
     private Button buttonCheck, buttonGoToMainMenu;
 
+    /**
+     * Initializes the GUI with the specified level information
+     *
+     * @param level the level which is going to be shown
+     */
     public CrosswordPuzzle(@NotNull Level level) {
         textFields = new TextField[level.gridPaneGameRows][level.gridPaneGameColumns];
 
@@ -41,6 +50,15 @@ public class CrosswordPuzzle {
         CreateContextMenu(level);
     }
 
+    /**
+     * Creates a stylized scroll pane with the specified information
+     *
+     * @param width     the width of the scroll pane
+     * @param height    the height of the scroll pane
+     * @param sentences the list of sentences to be shown
+     * @param font      the font of the text from scroll pane
+     * @return a scroll pane for horizontal or vertical sentences
+     */
     private @NotNull ScrollPane CreateScrollPane(int width, int height, @NotNull List<String> sentences, @NotNull Font font) {
         ScrollPane newScrollPane = new ScrollPane();
 
@@ -63,8 +81,15 @@ public class CrosswordPuzzle {
         return newScrollPane;
     }
 
+    /**
+     * Creates a border pane which represents the layout of the app
+     *
+     * @param level the level information
+     * @return a border pane which represents the layout of the GUI
+     */
     private @NotNull BorderPane CreateLayout(@NotNull Level level) {
         BorderPane newBorderPane = new BorderPane();
+
         newBorderPane.setTop(CreateGUI(level));
 
         newBorderPane.setLeft(CreateScrollPane(
@@ -86,8 +111,15 @@ public class CrosswordPuzzle {
         return newBorderPane;
     }
 
+    /**
+     * Creates a grid pane with text fields which will contain the letters of the crossword puzzle
+     *
+     * @param level the level information
+     * @return a grid pane with the cells for letters
+     */
     private @NotNull GridPane CreateGridPaneWithLetters(@NotNull Level level) {
         GridPane newGridPane = new GridPane();
+
         newGridPane.setBackground(Utility.backgroundBlack);
 
         for (int row = 0; row < level.gridPaneGameRows; row++) {
@@ -100,7 +132,6 @@ public class CrosswordPuzzle {
 
                 newTextField.setMinSize(Utility.GRID_PANE_LETTERS_CELL_SIZE, Utility.GRID_PANE_LETTERS_CELL_SIZE);
                 newTextField.setMaxSize(Utility.GRID_PANE_LETTERS_CELL_SIZE, Utility.GRID_PANE_LETTERS_CELL_SIZE);
-
                 newTextField.setFont(Font.font("Helvetica", FontWeight.BOLD, Utility.GRID_PANE_LETTERS_CELL_SIZE / 4 + Utility.GRID_PANE_LETTERS_CELL_SIZE / 8));
                 newTextField.setAlignment(Pos.CENTER);
 
@@ -113,9 +144,7 @@ public class CrosswordPuzzle {
                     newTextField.setText(newTextField.getText().toUpperCase());
                 });
 
-                //TEST
-                newTextField.setText(String.valueOf(level.gameCP[row][column]));
-                //TEST
+                //newTextField.setText(String.valueOf(level.gameCP[row][column]));
 
                 textFields[row][column] = newTextField;
                 newGridPane.add(newTextField, column, row);
@@ -125,6 +154,11 @@ public class CrosswordPuzzle {
         return newGridPane;
     }
 
+    /**
+     * Creates the context menu of the scene
+     *
+     * @param level the level information
+     */
     private void CreateContextMenu(@NotNull Level level) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -150,16 +184,22 @@ public class CrosswordPuzzle {
         scene.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(scene.getWindow(), contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
     }
 
+    /**
+     * Creates a grid pane with buttons for switching through menus and checking the puzzle
+     *
+     * @param level the level information
+     * @return a grid pane with buttons
+     */
     private @NotNull GridPane CreateGUI(@NotNull Level level) {
         GridPane newGridPane = new GridPane();
 
         newGridPane.setMinSize(level.gridPaneGameColumns * Utility.GRID_PANE_LETTERS_CELL_SIZE + Utility.GAME_SENTENCES_WIDTH * 2, Utility.GAME_GUI_HEIGHT);
         newGridPane.setMaxSize(level.gridPaneGameColumns * Utility.GRID_PANE_LETTERS_CELL_SIZE + Utility.GAME_SENTENCES_WIDTH * 2, Utility.GAME_GUI_HEIGHT);
-
         newGridPane.setAlignment(Pos.CENTER);
         newGridPane.setHgap(25);
 
         buttonCheck = Utility.CreateButton("Check", Utility.fontHelveticaB20, 120, 40);
+
         buttonCheck.setOnAction(event -> {
             for (int row = 0; row < level.gridPaneGameRows; row++) {
                 for (int column = 0; column < level.gridPaneGameColumns; column++) {
@@ -171,6 +211,7 @@ public class CrosswordPuzzle {
                         buttonCheck.setText("Check Again");
                         buttonCheck.setMinSize(180, 40);
                         buttonCheck.setMaxSize(180, 40);
+
                         return;
                     }
                 }
@@ -182,9 +223,9 @@ public class CrosswordPuzzle {
         });
 
         buttonGoToMainMenu = Utility.CreateButton("Main Menu", Utility.fontHelveticaB20, 180, 40);
-        buttonGoToMainMenu.setOnAction(actionEvent -> Main.sceneManager.SwitchToMainMenu(actionEvent));
-
         Button buttonChooseLevel = Utility.CreateButton("Choose Level Menu", Utility.fontHelveticaB20, 240, 40);
+
+        buttonGoToMainMenu.setOnAction(actionEvent -> Main.sceneManager.SwitchToMainMenu(actionEvent));
         buttonChooseLevel.setOnAction(actionEvent -> Main.sceneManager.SwitchToMenuLevelChooser(actionEvent));
 
         newGridPane.add(buttonGoToMainMenu, 0, 0);
@@ -194,6 +235,9 @@ public class CrosswordPuzzle {
         return newGridPane;
     }
 
+    /**
+     * Returns the crossword puzzle scene
+     */
     public Scene GetScene() {
         return scene;
     }

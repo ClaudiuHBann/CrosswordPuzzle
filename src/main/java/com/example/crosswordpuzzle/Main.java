@@ -1,30 +1,37 @@
 package com.example.crosswordpuzzle;
 
-import com.example.crosswordpuzzle.infrastructure.Menus.MenuLevelChooser;
-import com.example.crosswordpuzzle.infrastructure.CrosswordPuzzle;
-import com.example.crosswordpuzzle.infrastructure.Menus.MenuLogin;
-import com.example.crosswordpuzzle.infrastructure.Menus.MenuMain;
-import com.example.crosswordpuzzle.core.SceneManager;
-import com.example.crosswordpuzzle.core.LevelLoader;
-import com.example.crosswordpuzzle.core.Utility;
+import com.example.crosswordpuzzle.infrastructure.Menus.*;
+import com.example.crosswordpuzzle.infrastructure.*;
+import com.example.crosswordpuzzle.core.*;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * Initializes everything for the app and has all the instances of the application
+ */
+@SuppressWarnings("ClassEscapesDefinedScope")
 public class Main extends Application {
     public static SceneManager sceneManager;
-    public static MenuMain menuMain;
-    public static MenuLogin menuLogin;
-    public static MenuLevelChooser menuLevelChooser;
     public static LevelLoader levelLoader;
+
+    public static MenuLogin menuLogin;
+    public static MenuMain menuMain;
+    public static MenuLevelChooser menuLevelChooser;
     public static CrosswordPuzzle crosswordPuzzle;
 
+    /**
+     * Overridden method which starts the app
+     *
+     * @param stage the stage of the app
+     */
     @Override
     public void start(Stage stage) {
         sceneManager = new SceneManager(stage);
-        menuMain = new MenuMain();
-        menuLogin = new MenuLogin();
         levelLoader = new LevelLoader(null);
+
+        menuLogin = new MenuLogin();
+        menuMain = new MenuMain();
         menuLevelChooser = new MenuLevelChooser();
 
         stage.setTitle("Crossword Puzzle");
@@ -36,13 +43,12 @@ public class Main extends Application {
         stage.setY((Utility.screenSize.getHeight() - stage.getHeight()) / 2);
     }
 
+    /**
+     * The entry point of the app
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 }
-
-// error handling
-
-
-
-// check code for everything?! XD

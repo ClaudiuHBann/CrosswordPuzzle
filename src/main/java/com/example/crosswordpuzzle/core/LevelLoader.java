@@ -11,17 +11,25 @@ import java.util.List;
 import java.io.File;
 
 import javafx.util.Pair;
+
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Class for loading levels and information about them
+ */
 public record LevelLoader(String rootFolder) {
-    public static List<String> loadedLevels;
-
+    /**
+     * Sets the root folder where levels are
+     *
+     * @param rootFolder the full path to the folder where levels are
+     */
     public LevelLoader(String rootFolder) {
         this.rootFolder = (rootFolder == null) ? System.getProperty("user.dir") + "\\levels\\" : rootFolder;
-
-        loadedLevels = new ArrayList<>();
     }
 
+    /**
+     * Returns a list of strings representing the levels names
+     */
     public @NotNull List<String> ListAllFiles() {
         List<String> levels = new ArrayList<>();
 
@@ -37,37 +45,46 @@ public record LevelLoader(String rootFolder) {
         return levels;
     }
 
+    /**
+     * Returns a list of pairs of ints representing the levels number of rows and columns
+     */
     public @NotNull List<Pair<Integer, Integer>> GetSizeOfAll() {
         List<Pair<Integer, Integer>> listOfSizes = new ArrayList<>();
 
-        ListAllFiles().forEach(levelName -> {
-            File file = new File(rootFolder + levelName + ".cpl");
-            Scanner scanner = null;
+        ListAllFiles().forEach(fileName -> {
             try {
-                scanner = new Scanner(file, StandardCharsets.UTF_8);
+                String rowsAndColumns = new Scanner(new File(rootFolder + fileName + ".cpl"), StandardCharsets.UTF_8).nextLine();
+                listOfSizes.add(new Pair<>(Integer.parseInt(rowsAndColumns.split(" ")[0]), Integer.parseInt(rowsAndColumns.split(" ")[1])));
             } catch (IOException e) {
-                e.printStackTrace();
+                Utility.ShowExceptionDialog(e);
             }
-            String rowsAndColumns = scanner.nextLine();
-
-            listOfSizes.add(new Pair<>(Integer.parseInt(rowsAndColumns.split(" ")[0]), Integer.parseInt(rowsAndColumns.split(" ")[1])));
         });
 
         return listOfSizes;
     }
 
-    public Level Load(String levelName) throws IOException {
-        if (levelName == null || loadedLevels.contains(levelName)) {
+    /**
+     * Loads a level with the specified name (and extension)
+     *
+     * @param levelName the name of the level with or without the extension
+     * @return level object containing all the information about a level
+     */
+    public Level Load(String levelName) {
+        if (levelName == null) {
             return null;
         } else if (levelName.indexOf('.') == -1) {
             levelName += ".cpl";
         }
 
-        loadedLevels.add(levelName);
+        Scanner scanner;
+        try {
+            scanner = new Scanner(new File(rootFolder + levelName), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Utility.ShowExceptionDialog(e);
+            return null;
+        }
 
-        File file = new File(rootFolder + levelName);
-        Scanner scanner = new Scanner(file, StandardCharsets.UTF_8);
-        String rowsAndColumns = scanner.nextLine();
+        String rowsAndColumns = Objects.requireNonNull(scanner).nextLine();
         Level level = new Level(Integer.parseInt(rowsAndColumns.split(" ")[0]), Integer.parseInt(rowsAndColumns.split(" ")[1]));
 
         for (int row = 0; row < level.gridPaneGameRows; row++) {

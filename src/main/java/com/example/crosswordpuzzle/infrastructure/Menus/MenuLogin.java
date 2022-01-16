@@ -16,9 +16,15 @@ import javafx.scene.Scene;
 
 import java.util.Objects;
 
+/**
+ * Login menu GUI
+ */
 public class MenuLogin {
     public final Scene scene;
 
+    /**
+     * Initializes class and also creates the gui of the login menu
+     */
     public MenuLogin() {
         GridPane grid = new GridPane();
 
@@ -27,33 +33,28 @@ public class MenuLogin {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-
         Text sceneTitle = new Text("Welcome to Crossword Puzzle");
         sceneTitle.setFont(Utility.fontHelveticaB20);
-        grid.add(sceneTitle, 0, 0, 2, 1);
-
 
         Label usernameLabel = new Label("Username:");
         TextField username = new TextField();
 
-        grid.add(usernameLabel, 0, 1);
-        grid.add(username, 1, 1);
-
-
         Label passwordLabel = new Label("Password:");
         PasswordField password = new PasswordField();
-
-        grid.add(passwordLabel, 0, 2);
-        grid.add(password, 1, 2);
-
 
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
 
         Button buttonLogIn = new Button("Log in");
         hBox.getChildren().add(buttonLogIn);
+
         Text infoIfWrong = new Text();
 
+        grid.add(sceneTitle, 0, 0, 2, 1);
+        grid.add(usernameLabel, 0, 1);
+        grid.add(username, 1, 1);
+        grid.add(passwordLabel, 0, 2);
+        grid.add(password, 1, 2);
         grid.add(hBox, 1, 4);
         grid.add(infoIfWrong, 1, 6);
 
@@ -67,9 +68,13 @@ public class MenuLogin {
         });
 
         scene = new Scene(grid, 400, 250);
+
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.ENTER), buttonLogIn::fire);
     }
 
+    /**
+     * Returns the login menu scene
+     */
     public Scene GetScene() {
         return scene;
     }

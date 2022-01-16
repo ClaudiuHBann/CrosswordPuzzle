@@ -5,22 +5,27 @@ import com.example.crosswordpuzzle.core.Utility;
 import com.example.crosswordpuzzle.Main;
 
 import javafx.collections.FXCollections;
-import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.util.Pair;
 
-import java.io.IOException;
 import java.util.List;
 
+/**
+ * Level Chooser Menu GUI
+ */
 public class MenuLevelChooser {
     private final Scene scene;
 
+    /**
+     * Initializes class and also creates the gui of the level chooser menu
+     */
     public MenuLevelChooser() {
         GridPane gridpane = new GridPane();
 
@@ -48,6 +53,7 @@ public class MenuLevelChooser {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
+
                 if (item != null) {
                     setText(item);
 
@@ -57,6 +63,7 @@ public class MenuLevelChooser {
         });
 
         Button buttonPlay = Utility.CreateButton("Play", Utility.fontHelveticaB20, 120, 40);
+
         listView.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) {
                 buttonPlay.fire();
@@ -72,38 +79,33 @@ public class MenuLevelChooser {
         listView.setMaxSize(600, 225);
 
         Label levelNameOrNullInfo = new Label("Select a level to load...");
-        levelNameOrNullInfo.setFont(Utility.fontHelveticaB20);
-        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> levelNameOrNullInfo.setText("Selected level is: " + Main.levelLoader.ListAllFiles().get(listView.getSelectionModel().getSelectedIndex())));
 
+        levelNameOrNullInfo.setFont(Utility.fontHelveticaB20);
+
+        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> levelNameOrNullInfo.setText("Selected level is: " + Main.levelLoader.ListAllFiles().get(listView.getSelectionModel().getSelectedIndex())));
 
         HBox hBox = new HBox();
 
         hBox.setMinSize(600, 75);
         hBox.setMaxSize(600, 75);
-
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(25);
         hBox.setPadding(new Insets(0, 25, 0, 25));
 
-
         buttonPlay.setOnAction(actionEvent -> {
-            try {
-                if (listView.getSelectionModel().getSelectedIndices().size() > 0) {
-                    Main.crosswordPuzzle = new CrosswordPuzzle(Main.levelLoader.Load(Main.levelLoader.ListAllFiles().get(listView.getSelectionModel().getSelectedIndex())));
-                    Main.sceneManager.SwitchToCP(actionEvent);
-                } else {
-                    levelNameOrNullInfo.setText("Selected level is: None");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (listView.getSelectionModel().getSelectedIndices().size() > 0) {
+                Main.crosswordPuzzle = new CrosswordPuzzle(Main.levelLoader.Load(Main.levelLoader.ListAllFiles().get(listView.getSelectionModel().getSelectedIndex())));
+                Main.sceneManager.SwitchToCP(actionEvent);
+            } else {
+                levelNameOrNullInfo.setText("Selected level is: None");
             }
         });
 
         Button buttonBack = Utility.CreateButton("Back", Utility.fontHelveticaB20, 120, 40);
+
         buttonBack.setOnAction(actionEvent -> Main.sceneManager.SwitchToMainMenu(actionEvent));
 
         hBox.getChildren().addAll(buttonBack, levelNameOrNullInfo, buttonPlay);
-
 
         gridpane.add(listView, 0, 0);
         gridpane.add(hBox, 0, 1);
@@ -111,6 +113,9 @@ public class MenuLevelChooser {
         scene = new Scene(gridpane, 600, 300);
     }
 
+    /**
+     * Returns the level chooser menu scene
+     */
     public Scene GetScene() {
         return scene;
     }
